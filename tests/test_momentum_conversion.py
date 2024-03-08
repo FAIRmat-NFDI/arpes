@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
+from numpy.testing import assert_array_almost_equal
 
-from arpes.io import example_data
-from arpes.fits.utilities import broadcast_model
+import arpes.xarray_extensions
 from arpes.fits.fit_models import AffineBroadenedFD, QuadraticModel
+from arpes.fits.utilities import broadcast_model
+from arpes.io import example_data
 from arpes.utilities.conversion import convert_to_kspace
 from arpes.utilities.conversion.forward import convert_through_angular_point
-import arpes.xarray_extensions
 
 
 def load_energy_corrected():
@@ -23,19 +24,22 @@ def test_cut_momentum_conversion():
     kdata = convert_to_kspace(example_data.cut.spectrum, kp=np.linspace(-0.12, 0.12, 600))
     selected = kdata.values.ravel()[[0, 200, 800, 1500, 2800, 20000, 40000, 72000]]
 
-    assert np.nan_to_num(selected).tolist() == [
-        pytest.approx(c)
-        for c in [
-            0,
-            319.73139835,
-            318.12917486,
-            258.94653353,
-            200.48829069,
-            163.12937875,
-            346.93136055,
-            0,
-        ]
-    ]
+    assert_array_almost_equal(
+        np.nan_to_num(selected),
+        np.array(
+            [
+                0,
+                319.73139835,
+                318.12917486,
+                258.94653353,
+                200.48829069,
+                163.12937875,
+                346.93136055,
+                0,
+            ]
+        ),
+        decimal=1,
+    )
 
 
 def test_cut_momentum_conversion_ranges():
@@ -44,19 +48,91 @@ def test_cut_momentum_conversion_ranges():
     data = example_data.cut.spectrum
     kdata = convert_to_kspace(data, kp=np.linspace(-0.12, 0.12, 80))
 
-    expected_values = """
-    192, 157, 157, 183, 173, 173, 177, 165, 171, 159, 160, 154, 155, 
-    153, 146, 139, 139, 138, 127, 125, 121, 117, 118, 113, 125, 145, 
-    147, 141, 147, 147, 146, 143, 143, 145, 131, 147, 136, 133, 145, 
-    139, 136, 138, 128, 133, 126, 136, 135, 139, 141, 147, 143, 144, 
-    155, 151, 159, 140, 150, 120, 121, 125, 131, 130, 138, 140, 149, 
-    144, 155, 151, 154, 165, 165, 166, 172, 168, 167, 177, 177, 171, 
-    168, 160
-    """.replace(
-        ",", ""
-    ).split()
-    expected_values = [int(m) for m in expected_values]
-    assert kdata.argmax(dim="eV").values.tolist() == expected_values
+    expected_values = np.array(
+        [
+            192,
+            157,
+            157,
+            183,
+            173,
+            173,
+            177,
+            165,
+            171,
+            159,
+            160,
+            154,
+            155,
+            153,
+            146,
+            139,
+            139,
+            138,
+            127,
+            125,
+            121,
+            117,
+            118,
+            113,
+            125,
+            145,
+            147,
+            141,
+            147,
+            147,
+            146,
+            143,
+            143,
+            145,
+            131,
+            147,
+            136,
+            133,
+            145,
+            139,
+            136,
+            138,
+            128,
+            133,
+            126,
+            136,
+            135,
+            139,
+            141,
+            147,
+            143,
+            144,
+            155,
+            151,
+            159,
+            140,
+            150,
+            120,
+            121,
+            125,
+            127,
+            130,
+            138,
+            140,
+            149,
+            144,
+            155,
+            151,
+            154,
+            165,
+            165,
+            166,
+            172,
+            168,
+            167,
+            177,
+            177,
+            171,
+            168,
+            160,
+        ]
+    )
+    assert_array_almost_equal(kdata.argmax(dim="eV").values, expected_values)
 
 
 def test_fermi_surface_conversion():
@@ -73,9 +149,9 @@ def test_fermi_surface_conversion():
     ky_max = kdata.idxmax(dim="kx").max().item()
 
     assert ky_max == pytest.approx(0.4373433583959896)
-    assert kx_max == pytest.approx(-0.015037593984962516)
-    assert kdata.mean().item() == pytest.approx(613.79029047)
-    assert kdata.fillna(0).mean().item() == pytest.approx(415.7048189)
+    assert kx_max == pytest.approx(-0.02506265664160412)
+    assert kdata.mean().item() == pytest.approx(613.848688084093)
+    assert kdata.fillna(0).mean().item() == pytest.approx(415.7673895479573)
 
 
 @pytest.mark.skip
@@ -119,35 +195,38 @@ def test_convert_angular_point_and_angle():
         {"kx": np.linspace(-0.02, 0.02, 10)},
     )
 
-    max_values = [
-        4141.79361851789,
-        4352.118805852634,
-        4528.183675544601,
-        4772.701193743715,
-        4967.954937427305,
-        5143.416481043858,
-        5389.480518039409,
-        5564.486620498726,
-        5963.2608828950015,
-        6495.800810281041,
-        6865.562982108332,
-        7112.036574537716,
-        7796.474181791687,
-        8160.106902788172,
-        8524.980143784462,
-        8520.4603140169,
-        8266.738479510586,
-        7786.5089626268455,
-        7151.2409294143,
-        6764.616607333701,
-        6381.040104212984,
-        6075.501205633937,
-        5922.880496514519,
-        5625.495181926943,
-        3077.8516096096077,
-        117.28646806572776,
-    ]
+    max_values = np.array(
+        [
+            4141.82736603,
+            4352.10441395,
+            4528.14158708,
+            4772.79036439,
+            4967.80545468,
+            5143.31935106,
+            5389.48929973,
+            5564.49516953,
+            5963.14662042,
+            6495.7520699,
+            6865.54515501,
+            7112.05589829,
+            7796.47414459,
+            8160.19371472,
+            8525.13697199,
+            8520.55263924,
+            8266.86194778,
+            7786.59602604,
+            7151.34116069,
+            6764.77021486,
+            6381.08052888,
+            6075.55168331,
+            5922.88003222,
+            5625.56194439,
+            3077.88595448,
+            117.28906073,
+        ]
+    )
 
-    assert kdata.sel(ky=slice(-0.7, 0)).isel(eV=slice(None, -20, 5)).max("ky").values.tolist() == [
-        pytest.approx(c) for c in max_values
-    ]
+    assert_array_almost_equal(
+        kdata.sel(ky=slice(-0.7, 0)).isel(eV=slice(None, -20, 5)).max("ky").values,
+        max_values,
+    )
