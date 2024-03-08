@@ -141,6 +141,15 @@ class ConvertKp(CoordinateConverter):
             )
             parallel_angle = self.arr.S.lookup_offset_coord("theta")
 
+        offset = self.arr.S.phi_offset + parallel_angle
+
+        try:
+            polar_angle = polar_angle.magnitude
+            parallel_angle = parallel_angle.magnitude
+            offset = offset.magnitude
+        except:
+            pass
+
         if self.k_tot is None:
             self.compute_k_tot(binding_energy)
 
@@ -152,7 +161,7 @@ class ConvertKp(CoordinateConverter):
             kp / np.cos(polar_angle),
             self.k_tot,
             self.phi,
-            self.arr.S.phi_offset + parallel_angle,
+            offset,
             par_tot,
             False,
         )
@@ -310,6 +319,11 @@ class ConvertKxKy(CoordinateConverter):
 
         chi = self.arr.S.lookup_offset_coord("chi")
 
+        try:
+            chi = chi.magnitude
+        except:
+            pass
+
         self.rkx = np.zeros_like(kx)
         self.rky = np.zeros_like(ky)
         _rotate_kx_ky(kx, ky, self.rkx, self.rky, chi)
@@ -335,6 +349,10 @@ class ConvertKxKy(CoordinateConverter):
         scan_angle = self.direct_angles[1]
         self.phi = np.zeros_like(ky)
         offset = self.arr.S.phi_offset + self.arr.S.lookup_offset_coord(self.parallel_angles[0])
+        try:
+            offset = offset.magnitude
+        except:
+            pass
 
         par_tot = isinstance(self.k_tot, np.ndarray) and len(self.k_tot) != 1
         assert len(self.k_tot) == len(self.phi) or len(self.k_tot) == 1
@@ -386,21 +404,37 @@ class ConvertKxKy(CoordinateConverter):
                 offset = self.arr.S.psi_offset - self.arr.S.lookup_offset_coord(
                     self.parallel_angles[1]
                 )
+                try:
+                    offset = offset.magnitude
+                except:
+                    pass
                 _small_angle_arcsin(kx, self.k_tot, self.perp_angle, offset, par_tot, True)
             else:
                 offset = self.arr.S.psi_offset + self.arr.S.lookup_offset_coord(
                     self.parallel_angles[1]
                 )
+                try:
+                    offset = offset.magnitude
+                except:
+                    pass
                 _small_angle_arcsin(ky, self.k_tot, self.perp_angle, offset, par_tot, False)
         elif scan_angle == "beta":
             offset = self.arr.S.beta_offset + self.arr.S.lookup_offset_coord(
                 self.parallel_angles[1]
             )
+            try:
+                offset = offset.magnitude
+            except:
+                pass
             _exact_arcsin(ky, kx, self.k_tot, self.perp_angle, offset, par_tot, True)
         elif scan_angle == "theta":
             offset = self.arr.S.theta_offset - self.arr.S.lookup_offset_coord(
                 self.parallel_angles[1]
             )
+            try:
+                offset = offset.magnitude
+            except:
+                pass
             _exact_arcsin(kx, ky, self.k_tot, self.perp_angle, offset, par_tot, True)
         else:
             raise ValueError(

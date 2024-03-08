@@ -160,7 +160,7 @@ def broadcast_model(
 
     other_axes = set(data.dims).difference(set(broadcast_dims))
     template = data.sum(list(other_axes))
-    template.values = np.ndarray(template.shape, dtype=np.object)
+    template.values = np.ndarray(template.shape, dtype=object)
     n_fits = np.prod(np.array(list(template.S.dshape.values())))
 
     if parallelize is None:

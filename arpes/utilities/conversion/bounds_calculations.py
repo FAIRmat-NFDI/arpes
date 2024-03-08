@@ -244,7 +244,7 @@ def calculate_kx_ky_bounds(arr: xr.DataArray):
             beta_mid,
         ]
     )
-    kinetic_energy = arr.coords["eV"].values.max()
+    kinetic_energy = arr.S.hv - arr.S.work_function + arr.coords["eV"].values.max()
 
     kxs = arpes.constants.K_INV_ANGSTROM * np.sqrt(kinetic_energy) * np.sin(sampled_phi_values)
     kys = (
