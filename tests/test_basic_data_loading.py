@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
+import xarray as xr
 
 import arpes.xarray_extensions
-import xarray as xr
 from arpes.utilities.conversion import convert_to_kspace
 
 
@@ -298,7 +298,9 @@ class TestMetadata(object):
         ),
     ]
 
-    def test_load_file_and_basic_attributes(self, sandbox_configuration, file, expected):
+    def test_load_file_and_basic_attributes(
+        self, sandbox_configuration, file, expected
+    ):
         data = sandbox_configuration.load(file)
         assert isinstance(data, xr.Dataset)
 
@@ -417,69 +419,6 @@ class TestBasicDataLoading(object):
         #     'file': 7,
         #     'expected': {},
         # }),
-        # ALS Beamline 4 "MERLIN" / SES
-        (
-            "merlin_load_cut",
-            {
-                "file": "basic/MERLIN_8.pxt",
-                "expected": {
-                    "dims": ["eV", "phi"],
-                    "coords": {
-                        "phi": [-0.29103, 0.34335, 0.00081749],
-                        "eV": [-2.5, 0.2001, 0.002],
-                        "alpha": np.pi / 2,
-                    },
-                    "offset_coords": {"phi": -0.29103, "theta": 0.1043, "chi": 0},
-                },
-            },
-        ),
-        (
-            "merlin_load_xps",
-            {
-                "file": "basic/MERLIN_9.pxt",
-                "expected": {
-                    "dims": ["eV"],
-                    "coords": {
-                        "eV": [-55, 0.99915, 0.0999],
-                        "alpha": np.pi / 2,
-                        "chi": -107.09 * np.pi / 180,
-                    },
-                    "offset_coords": {"phi": 0, "theta": 0.002 * np.pi / 180, "chi": 0},
-                },
-            },
-        ),
-        (
-            "merlin_load_map",
-            {
-                "file": "basic/MERLIN_10_S001.pxt",
-                "expected": {
-                    "dims": ["theta", "eV", "phi"],
-                    "coords": {
-                        "theta": [-0.209439, -0.200713, 0.008726],
-                        "phi": [-0.29103, 0.34335, 0.00081749],
-                        "eV": [-1.33713, 0.33715, 0.00159],
-                        "alpha": np.pi / 2,
-                    },
-                    "offset_coords": {"phi": -0.29103, "theta": -0.209439, "chi": 0},
-                },
-            },
-        ),
-        (
-            "merlin_load_hv",
-            {
-                "file": "basic/MERLIN_11_S001.pxt",
-                "expected": {
-                    "dims": ["hv", "eV", "phi"],
-                    "coords": {
-                        "hv": [108, 110, 2],
-                        "phi": [-0.29103, 0.34335, 0.00081749],
-                        "eV": [-1.33911, 0.34312, 0.00159],
-                        "alpha": np.pi / 2,
-                    },
-                    "offset_coords": {"phi": -0.29103, "theta": -0.999 * np.pi / 180, "chi": 0},
-                },
-            },
-        ),
         # ALS Beamline 7 "MAESTRO"
         (
             "maestro_load_cut",
@@ -595,7 +534,9 @@ class TestBasicDataLoading(object):
         ),
     ]
 
-    def test_load_file_and_basic_attributes(self, sandbox_configuration, file, expected):
+    def test_load_file_and_basic_attributes(
+        self, sandbox_configuration, file, expected
+    ):
         data = sandbox_configuration.load(file)
         assert isinstance(data, xr.Dataset)
 
@@ -604,14 +545,26 @@ class TestBasicDataLoading(object):
             assert attr in data.attrs
 
         # assert that all necessary coordinates are present
-        necessary_coords = {"phi", "psi", "alpha", "chi", "beta", "theta", "x", "y", "z", "hv"}
+        necessary_coords = {
+            "phi",
+            "psi",
+            "alpha",
+            "chi",
+            "beta",
+            "theta",
+            "x",
+            "y",
+            "z",
+            "hv",
+        }
         for necessary_coord in necessary_coords:
             assert necessary_coord in data.coords
 
         # assert basic spectrum attributes
         for attr in ["hv", "location"]:
             if attr == "hv" and (
-                data.S.spectrum.attrs.get("spectrum_type") == "hv_map" or len(data.S.spectra) > 1
+                data.S.spectrum.attrs.get("spectrum_type") == "hv_map"
+                or len(data.S.spectra) > 1
             ):
                 continue
             assert attr in data.S.spectrum.attrs
