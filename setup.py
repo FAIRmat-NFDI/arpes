@@ -15,7 +15,7 @@ DESCRIPTION = (
 URL = "https://gitlab.com/lanzara-group/python-arpes"
 EMAIL = "chstan@berkeley.edu"
 AUTHOR = "Conrad Stansbury"
-REQUIRES_PYTHON = ">=3.8.0"  # we're being less permissive because of pyqtgraph
+REQUIRES_PYTHON = ">=3.8.0,<3.12"  # we're being less permissive because of pyqtgraph
 
 about = {}
 with open("./arpes/__init__.py") as fp:
@@ -95,13 +95,13 @@ Documentation available at: {}
 You should follow standard best practices for working with IPython and Jupyter.
 
 To get the interactive volumetric data explorer `qt_tool` you will need to install
-`PyQt5` and `pyqtgraph`. 
+`PyQt5` and `pyqtgraph`.
 
-To use the Igor data loading libraries in PyARPES you will need to install the `igor` 
+To use the Igor data loading libraries in PyARPES you will need to install the `igor`
 module from 'https://github.com/chstan/igorpy/tarball/712a4c4#egg=igor-0.3.1'.
 
-Some functionality, including PCA/Factor Analysis decomposition tools, require 
-additional heavy dependencies such as `scikit-learn` and `scikit-image`. 
+Some functionality, including PCA/Factor Analysis decomposition tools, require
+additional heavy dependencies such as `scikit-learn` and `scikit-image`.
 
 For Jupyter integration, please have a look at the documentation (link above).
 For support issues, contact chstansbury@gmail.com or chstan@berkeley.edu.
