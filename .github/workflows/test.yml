@@ -29,7 +29,7 @@ jobs:
       - name: Install package
         run: |
           pip install -e ".[core, test]"
-          pip install pytest
+          pip install pytest pytest-qt
       - name: Test with pytest
         run: |
           pytest -sv --show-capture=no tests
