@@ -32,6 +32,7 @@ jobs:
         run: |
           pip install -e ".[core, test]"
           pip install pytest pytest-qt
+          pip install https://github.com/chstan/igorpy/tarball/712a4c4\#egg\=igor
       - name: Test with pytest
         run: |
           pytest -sv --show-capture=no tests
