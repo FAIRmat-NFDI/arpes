@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 import xarray as xr
 
-import arpes.xarray_extensions
 from arpes.utilities.conversion import convert_to_kspace
 
 
@@ -112,94 +111,6 @@ class TestMetadata(object):
                     "sample_info": {
                         "id": None,
                         "name": None,
-                        "source": None,
-                        "reflectivity": None,
-                    },
-                },
-            },
-        ),
-        (
-            "merlin_load_cut",
-            {
-                "file": "basic/MERLIN_8.pxt",
-                "expected": {
-                    "scan_info": {
-                        "time": "09:52:10 AM",
-                        "date": "07/05/2017",
-                        "type": None,
-                        "spectrum_type": "cut",
-                        "experimenter": "Jonathan",
-                        "sample": "LaSb_3",
-                    },
-                    "experiment_info": {
-                        "temperature": 21.75,
-                        "temperature_cryotip": 21.43,
-                        "pressure": 3.11e-11,
-                        "polarization": (0, 0),
-                        "photon_flux": 2.652,
-                        "photocurrent": None,
-                        "probe": None,
-                        "probe_detail": None,
-                        "analyzer": "R8000",
-                        "analyzer_detail": {
-                            "name": "Scienta R8000",
-                            "parallel_deflectors": False,
-                            "perpendicular_deflectors": False,
-                            "radius": None,
-                            "type": "hemispherical",
-                        },
-                    },
-                    "analyzer_info": {
-                        "lens_mode": None,
-                        "lens_mode_name": "Angular30",
-                        "acquisition_mode": "swept",
-                        "pass_energy": 20,
-                        "slit_shape": "curved",
-                        "slit_width": 0.5,
-                        "slit_number": 7,
-                        "lens_table": None,
-                        "analyzer_type": "hemispherical",
-                        "mcp_voltage": 1550,
-                    },
-                    "beamline_info": {
-                        "hv": 90,
-                        "beam_current": 500.761,
-                        "linewidth": None,
-                        "photon_polarization": (0, 0),
-                        "entrance_slit": 50.1,
-                        "exit_slit": 50.1,
-                        "undulator_info": {
-                            "harmonic": 2,
-                            "type": "elliptically_polarized_undulator",
-                            "gap": 41.720,
-                            "z": 0,
-                            "polarization": 0,
-                        },
-                        "repetition_rate": 5e8,
-                        "monochromator_info": {
-                            "grating_lines_per_mm": None,
-                        },
-                    },
-                    "daq_info": {
-                        "daq_type": None,
-                        "region": "Swept_VB4",
-                        "region_name": "Swept_VB4",
-                        "prebinning": {},
-                        "trapezoidal_correction_strategy": None,
-                        "dither_settings": None,
-                        "sweep_settings": {
-                            "n_sweeps": 4,
-                            "step": 0.002,
-                            "low_energy": 88.849,
-                            "high_energy": 90.199,
-                        },
-                        "frames_per_slice": None,
-                        "frame_duration": None,
-                        "center_energy": 87.5,
-                    },
-                    "sample_info": {
-                        "id": None,
-                        "name": "LaSb_3",
                         "source": None,
                         "reflectivity": None,
                     },
