@@ -177,7 +177,6 @@ def test_convert_angular_pair():
     raise NotImplementedError
 
 
-@pytest.mark.skip("Somehow the bounds end up at nan in the kx_ky_conversion.pyL266.")
 def test_convert_angular_point_and_angle():
     """Validates that we correctly convert through high symmetry points."""
 
