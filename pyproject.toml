@@ -1,5 +1,92 @@
-[tool.black]
+[build-system]
+requires = ["setuptools >= 61.2"]
 
+[project]
+name = "arpes"
+dynamic = ["version"]
+authors = [
+    {name = "Conrad Stansbury", email = "chstan@berkeley.edu"},
+]
+description = "Modular data analysis code for angle resolved photoemission spectroscopy (ARPES)"
+readme = "README.rst"
+license = { file = "LICENSE" }
+requires-python = ">=3.8.0,<3.13"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "PyQt5>5.15",
+    "ase>=3.17.0,<3.22.0",
+    "astropy",
+    "bokeh>=2.0.0,<3.0.0",
+    "colorama",
+    "colorcet",
+    "dill",
+    "h5py>=3.2.1",
+    "imageio",
+    "ipywidgets>8.0.0",
+    "lmfit>=1.0.0,<2.0.0",
+    "matplotlib>=3.0.3",
+    "netCDF4>=1.5.0,<1.7.0",
+    "numba>=0.53.0,<1.0.0",
+    "numpy>=1.20.0,<2.0.0",
+    "packaging",
+    "pandas",
+    "pint",
+    "pyqtgraph>=0.12.0,<0.13.0",
+    "rx",
+    "scipy>=1.6.0,<2.0.0",
+    "titlecase",
+    "tqdm",
+    "xarray>=0.16.1",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/lanzara-group/python-arpes"
+
+[project.optional-dependencies]
+igor = [
+    "igor==0.3.1",
+]
+ml= [
+    "scikit-learn>=0.24.0,<1.0.0",
+    "scikit-image",
+    "cvxpy",
+    "libgcc",
+]
+jupyter = [
+        "jupyter",
+        "ipython",
+        "jupyter_contrib_nbextensions",
+        "notebook>=5.7.0",
+]
+
+dev = [
+    "markdown-include",
+    "attrs==17.4.0",
+    "pluggy==0.6.0",
+    "py==1.5.2",
+    "pytest==3.3.2",
+]
+
+[tool.setuptools]
+packages = ["arpes", "resources"]
+
+[tool.black]
 line-length = 100
 
 [tool.pydocstyle]
@@ -19,3 +106,4 @@ exclude_lines = [
   "raise NotImplementedError",
   "pragma: no cover",
 ]
+
