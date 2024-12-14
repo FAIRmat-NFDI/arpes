@@ -60,7 +60,7 @@ Homepage = "https://gitlab.com/lanzara-group/python-arpes"
 
 [project.optional-dependencies]
 igor = [
-    "igor==0.3.1",
+    "igor @ git+https://github.com/chstan/igorpy.git",
 ]
 ml= [
     "scikit-learn>=0.24.0,<1.0.0",
@@ -77,10 +77,11 @@ jupyter = [
 
 dev = [
     "markdown-include",
-    "attrs==17.4.0",
-    "pluggy==0.6.0",
-    "py==1.5.2",
-    "pytest==3.3.2",
+    "attrs>=17.4.0",
+    "pluggy>=0.6.0",
+    "py>=1.5.2",
+    "pytest>=3.3.2",
+    "pytest-qt>=4.0.0",
 ]
 
 [tool.setuptools.packages.find]

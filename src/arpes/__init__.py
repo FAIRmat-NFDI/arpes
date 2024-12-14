@@ -5,6 +5,10 @@ import warnings
 
 from typing import Union
 
+import os
+# Set NUMBA_DISABLE_INTEL_SVML for windows
+os.environ['NUMBA_DISABLE_INTEL_SVML'] = "1"
+
 # Use both version conventions for people's sanity.
 VERSION = "3.0.1"
 __version__ = VERSION
