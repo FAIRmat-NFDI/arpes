@@ -30,8 +30,7 @@ jobs:
           python -m pip install --upgrade pip
       - name: Install package
         run: |
-          pip install -e ".[core, test]"
-          pip install pytest pytest-qt
+          pip install -e ".[dev]"
       - name: Test with pytest
         run: |
           pytest -sv --show-capture=no tests
