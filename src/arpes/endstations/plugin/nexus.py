@@ -112,12 +112,18 @@ class NeXusEndstation(SingleFileEndstation):
                     if len(attributes[axis]) > 0:
                         attributes[axis] = attributes[axis][0]
 
+            # add nan for missing coordinates
+            for axis in self.ENSURE_COORDS_EXIST:
+                if axis not in attributes:
+                    attributes[axis] = np.nan
+
             return attributes
 
         def load_nx_data(nxdata: h5py.Group, definition: h5py.Dataset, attributes: dict) -> xr.DataArray:                
             axes_names = nxdata.attrs["axes"]
             dims = []
             coords = {}
+            units = {}
             if definition is not None and "NXmpes_arpes" in definition[()].decode():          
                 # handle moving axes for NXmpes_arpes data
                 for axis_name in axes_names:
@@ -135,13 +141,17 @@ class NeXusEndstation(SingleFileEndstation):
             for axis_name, dim in zip(axes_names, dims):
                 coords[dim] = nxdata[axis_name][:]
                 if "units" in nxdata[axis_name].attrs:
-                    coords[dim] = coords[dim] * ureg(nxdata[axis_name].attrs["units"])
-                    if coords[dim].units == "degree":
-                        coords[dim] = coords[dim].to(ureg.rad)
+                    units[dim] = ureg(nxdata[axis_name].attrs["units"])
+                    if units[dim].units == "degree":
+                        coords[dim] = (coords[dim] * units[dim].to(ureg.rad)).magnitude
+                        units[dim] = units[dim].to(ureg.rad)
 
             data = nxdata[nxdata.attrs["signal"]][:]
 
             dataset = xr.DataArray(data, coords=coords, dims=dims, attrs=attributes)
+
+            for axis in units.keys():
+                dataset[axis].attrs["units"] = units[axis].units
 
             return dataset
 
