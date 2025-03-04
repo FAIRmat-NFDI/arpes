@@ -114,28 +114,32 @@ class NeXusEndstation(SingleFileEndstation):
 
             return attributes
 
-        def load_nx_data(nxdata: h5py.Group, attributes: dict) -> xr.DataArray:
-            axes = nxdata.attrs["axes"]
-
-            # handle moving axes
-            new_axes = []
-            for axis in axes:
-                if f"reference" not in nxdata[axis].attrs:
-                    raise KeyError(f"Reference attribute not found for axis {axis}.")
-
-                axis_reference: str = nxdata[axis].attrs["reference"]
-                axis_reference_key = axis_reference.split("/", 2)[-1]
-                new_axes.append(nexus_translation_table[axis_reference_key])
-                if nexus_translation_table[axis_reference_key] in attributes:
-                    attributes.pop(nexus_translation_table[axis_reference_key])
-
+        def load_nx_data(nxdata: h5py.Group, definition: h5py.Dataset, attributes: dict) -> xr.DataArray:                
+            axes_names = nxdata.attrs["axes"]
+            dims = []
             coords = {}
-            for axis, new_axis in zip(axes, new_axes):
-                coords[new_axis] = nxdata[axis][:] * ureg(nxdata[axis].attrs["units"])
-                if coords[new_axis].units == "degree":
-                    coords[new_axis] = coords[new_axis].to(ureg.rad)
+            if definition is not None and "NXmpes_arpes" in definition[()].decode():          
+                # handle moving axes for NXmpes_arpes data
+                for axis_name in axes_names:
+                    if f"reference" not in nxdata[axis_name].attrs:
+                        raise KeyError(f"Reference attribute not found for axis {axis_name}.")
+
+                    axis_reference: str = nxdata[axis_name].attrs["reference"]
+                    axis_reference_key = axis_reference.split("/", 2)[-1]
+                    dims.append(nexus_translation_table[axis_reference_key])
+                    if nexus_translation_table[axis_reference_key] in attributes:
+                        attributes.pop(nexus_translation_table[axis_reference_key])
+            else:
+                dims = list(axes_names)
+
+            for axis_name, dim in zip(axes_names, dims):
+                coords[dim] = nxdata[axis_name][:]
+                if "units" in nxdata[axis_name].attrs:
+                    coords[dim] = coords[dim] * ureg(nxdata[axis_name].attrs["units"])
+                    if coords[dim].units == "degree":
+                        coords[dim] = coords[dim].to(ureg.rad)
+
             data = nxdata[nxdata.attrs["signal"]][:]
-            dims = new_axes
 
             dataset = xr.DataArray(data, coords=coords, dims=dims, attrs=attributes)
 
@@ -146,7 +150,8 @@ class NeXusEndstation(SingleFileEndstation):
             attributes = {}
             h5file.visititems(parse_attrs)
             attributes = translate_nxmpes_to_pyarpes(attributes)
-            dataset = load_nx_data(h5file[data_path], attributes)
+            definition = h5file[f"/{entry_name}/definition"] if f"/{entry_name}/definition" in h5file else None
+            dataset = load_nx_data(h5file[data_path], definition, attributes)
             return dataset
 
     def load_single_frame(
